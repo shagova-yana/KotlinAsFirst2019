@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import kotlin.math.PI
 
-class Tests {
+class
+Tests {
     @Test
     @Tag("Example")
     fun sqr() {
