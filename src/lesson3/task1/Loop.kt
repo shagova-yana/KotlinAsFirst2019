@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED_PARAMETER", "UNREACHABLE_CODE")
+@file:Suppress("UNUSED_PARAMETER")
 
 package lesson3.task1
 
@@ -130,11 +130,9 @@ fun nod(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..n)
-        if (n % i == 0) {
-            return i
-            break
-        }
+    if (isPrime(n)) return n
+    for (i in 2..n / 2)
+        if (n % i == 0) return i
     return 0
 }
 
@@ -271,9 +269,7 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var a = n
-    var c = 0
-    c = revert(n)
+    val c: Int = revert(n)
     return c == n
 }
 
