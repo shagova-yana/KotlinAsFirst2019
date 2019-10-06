@@ -130,8 +130,6 @@ fun nod(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    if (n in 2..3) return n
-    if (n % 2 == 0) return 2
     for (i in 2..sqrt(n.toDouble()).toInt())
         if (n % i == 0) return i
     return n
