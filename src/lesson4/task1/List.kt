@@ -431,6 +431,9 @@ fun russian(n: Int): String {
     }
     if (x in 20..99) str += l2[x / 10 - 1] + " "
     x %= 10
-    str += l4[x - 1]
-    return str
+    if (x == 0) return str.trim()
+    else {
+        str += l4[x - 1]
+        return str
+    }
 }
