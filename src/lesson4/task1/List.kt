@@ -370,7 +370,7 @@ fun digitTranslation(n: Int, f: Int): String {
         "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
     )
     val unit = listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
-    val unitForThouse = listOf("одна", "две")
+    val unitForThouse = listOf("одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     val str = mutableListOf<String>()
     var a = n
     if (a >= 100) str.add(hundred[a / 100 - 1])
