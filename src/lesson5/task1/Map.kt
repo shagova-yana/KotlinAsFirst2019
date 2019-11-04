@@ -226,12 +226,14 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min: Double = Double.MAX_VALUE
     val res = StringBuilder()
+    var f = 0
     for ((key, pair) in stuff)
         if (kind == pair.first && pair.second < min) {
             res.append(key)
             min = pair.second
+            f++
         }
-    if (min != Double.MAX_VALUE) return res.toString()
+    if (f != 0) return res.toString()
     else return null
 }
 
@@ -244,7 +246,10 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.toSet() == word.toSet()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    if (word == "") return true
+    return chars.toSet() == word.toSet()
+}
 
 
 /**
@@ -261,14 +266,14 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.toSet() == wo
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val map = mutableMapOf<String, Int>()
-    for (i in 0 until list.size) {
-        var c = 1
-        for (j in i + 1 until list.size)
-            if (list[i] == list[j]) {
-                c++
-                map[list[i]] = c
-            }
-    }
+    for (i in 0 until list.size)
+        if (list[i] !in map) {
+            var c = 1
+            for (j in i + 1 until list.size)
+                if (list[i] == list[j])
+                    c++
+            if (c != 1) map[list[i]] = c
+        }
     return map
 }
 
@@ -284,7 +289,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
 fun hasAnagrams(words: List<String>): Boolean {
     for (i in 0 until words.size)
         for (j in i + 1 until words.size)
-            if (words[i] == words[j].reversed()) return true
+            if (words[i].toSet() == words[j].toSet()) return true
     return false
 }
 
