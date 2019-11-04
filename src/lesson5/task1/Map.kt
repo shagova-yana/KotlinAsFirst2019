@@ -228,7 +228,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
     val res = StringBuilder()
     var f = 0
     for ((key, pair) in stuff)
-        if (kind == pair.first && pair.second < min) {
+        if (kind == pair.first && pair.second <= min) {
             res.clear()
             res.append(key)
             min = pair.second
