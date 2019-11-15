@@ -242,8 +242,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
     word.toSet() == chars.toSet().intersect(word.toSet()) || word == ""
-            || word.toUpperCase().toSet() == chars.toSet().intersect(word.toSet())
-            || word.toLowerCase().toSet() == chars.toSet().intersect(word.toSet())
+            || word.toUpperCase().toSet() == chars.toSet().intersect(word.toUpperCase().toSet())
+            || word.toLowerCase().toSet() == chars.toSet().intersect(word.toLowerCase().toSet())
 
 
 
