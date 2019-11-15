@@ -263,12 +263,11 @@ fun convert(n: Int, base: Int): List<Int> {
 fun convertToString(n: Int, base: Int): String {
     var x = n
     val str = StringBuilder()
-    if (n == 0) str.append(0)
-    while (x > 0) {
+    do {
         if (x % base <= 9) str.append(x % base)
-        if (x % base >= 10) str.append((x % base + 87).toChar())
+        if (x % base >= 10) str.append('W' + x % base)
         x /= base
-    }
+    } while (x > 0)
     return str.toString().reversed()
 }
 
@@ -298,8 +297,8 @@ fun decimal(digits: List<Int>, base: Int): Int =
 fun decimalFromString(str: String, base: Int): Int {
     var dig = 0
     for (i in 0 until str.length) {
-        if (str[i].toInt() <= 57) dig += (str[i].toInt() - 48) * base.toDouble().pow(str.length - 1 - i).toInt()
-        if (str[i].toInt() >= 97) dig += (str[i].toInt() - 87) * base.toDouble().pow(str.length - 1 - i).toInt()
+        if (str[i] <= '9') dig += (str[i] - '0') * base.toDouble().pow(str.length - 1 - i).toInt()
+        if (str[i] >= 'a') dig += (str[i] - 'W') * base.toDouble().pow(str.length - 1 - i).toInt()
     }
     return dig
 }

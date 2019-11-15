@@ -2,10 +2,6 @@
 
 package lesson5.task1
 
-import lesson4.task1.squares
-import java.lang.StringBuilder
-import kotlin.collections.MutableMap as MutableMap1
-
 /**
  * Пример
  *
@@ -36,7 +32,7 @@ fun shoppingListCost(
  * для которых телефон начинается с заданного кода страны `countryCode`
  */
 fun filterByCountryCode(
-    phoneBook: MutableMap1<String, String>,
+    phoneBook: MutableMap<String, String>,
     countryCode: String
 ) {
     val namesToRemove = mutableListOf<String>()
@@ -134,7 +130,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap1<String, String>, b: Map<String, String>): Unit {
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
     for ((key, value) in b)
         if (a[key] == value) a.remove(key)
 }
@@ -168,18 +164,18 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> =
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val mapC = mutableMapOf<String, String>()
+    mapC.putAll(mapA)
     val list = mutableListOf<String>()
-    for ((key, value) in mapA) {
-        if (key in mapB && mapB[key] != value) {
+    for ((key, value) in mapB) {
+        if (key in mapC && value != mapC[key]) {
+            list.add(mapC[key].toString())
             list.add(value)
-            list.add(mapB[key].toString())
             mapC[key] = list.joinToString()
+            list.removeAll(list)
         } else mapC[key] = value
     }
-    for ((key, value) in mapB) {
-        if (key !in mapC) mapC[key] = value
-    }
     return mapC
+
 }
 
 /**
@@ -199,12 +195,12 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
         if (key !in info)
             info[key] = Pair(value, 1)
         else {
-            val newKey = info[key]?.first?.plus(value)
-            val newValue = info[key]?.second?.plus(1)
+            val newKey = info[key]?.first!! + value
+            val newValue = info[key]?.second!! + 1
             info[key] = Pair(newKey, newValue) as Pair<Double, Int>
         }
     for ((key, pair) in info)
-        res[key] = pair.first.div(pair.second.toDouble())
+        res[key] = pair.first / (pair.second.toDouble())
     return res
 }
 
@@ -225,17 +221,14 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min: Double = Double.MAX_VALUE
-    val res = StringBuilder()
-    var f = 0
+    val res = mutableListOf<String>()
     for ((key, pair) in stuff)
         if (kind == pair.first && pair.second <= min) {
-            res.clear()
-            res.append(key)
+            res.add(key)
             min = pair.second
-            f++
         }
-    if (f != 0) return res.toString()
-    else return null
+    return if (res.isNotEmpty()) res.last()
+    else null
 }
 
 /**
@@ -247,10 +240,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    if (word == "") return true
-    return word.toSet() == chars.toSet().intersect(word.toSet())
-}
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+    word.toSet() == chars.toSet().intersect(word.toSet()) || word == ""
+
 
 
 /**
@@ -268,14 +260,11 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val map = mutableMapOf<String, Int>()
     for (i in 0 until list.size)
-        if (list[i] !in map) {
-            var c = 1
-            for (j in i + 1 until list.size)
-                if (list[i] == list[j])
-                    c++
-            if (c != 1) map[list[i]] = c
-        }
-    return map
+        if (list[i] in map) {
+            val c = map[list[i]]
+            map[list[i]] = c!! + 1
+        } else map[list[i]] = 1
+    return map.filter { it.value > 1 }
 }
 
 /**
@@ -337,7 +326,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    var pair = Pair(-1, -1)
+    for (i in 0..list.size - 2)
+        for (j in i + 1 until list.size)
+            if (list[i] + list[j] == number)
+                pair = Pair(i, j)
+    return pair
+}
 
 /**
  * Очень сложная
