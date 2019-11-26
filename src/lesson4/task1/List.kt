@@ -261,14 +261,14 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    var x = n
-    val str = StringBuilder()
-    do {
-        if (x % base <= 9) str.append(x % base)
-        if (x % base >= 10) str.append('W' + x % base)
-        x /= base
-    } while (x > 0)
-    return str.toString().reversed()
+    val list = convert(n, base)
+    val res = StringBuilder()
+    for (i in 0 until list.size)
+        if (list[i] > 9)
+            res.append('W' + list[i])
+        else res.append(list[i].toString())
+    return res.toString()
+
 }
 
 /**

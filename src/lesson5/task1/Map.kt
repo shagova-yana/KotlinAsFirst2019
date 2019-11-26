@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import ru.spbstu.wheels.sorted
+
 /**
  * Пример
  *
@@ -197,7 +199,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
         else {
             val newKey = info[key]?.first!! + value
             val newValue = info[key]?.second!! + 1
-            info[key] = Pair(newKey, newValue) as Pair<Double, Int>
+            info[key] = Pair(newKey, newValue)
         }
     for ((key, pair) in info)
         res[key] = pair.first / (pair.second.toDouble())
@@ -221,14 +223,13 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min: Double = Double.MAX_VALUE
-    val res = mutableListOf<String>()
+    var res: String? = null
     for ((key, pair) in stuff)
         if (kind == pair.first && pair.second <= min) {
-            res.add(key)
+            res = key
             min = pair.second
         }
-    return if (res.isNotEmpty()) res.last()
-    else null
+    return res
 }
 
 /**
@@ -241,9 +242,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    word.toSet() == chars.toSet().intersect(word.toSet()) || word == ""
-            || word.toUpperCase().toSet() == chars.toSet().intersect(word.toUpperCase().toSet())
-            || word.toLowerCase().toSet() == chars.toSet().intersect(word.toLowerCase().toSet())
+    word.toSet() == chars.toSet().intersect(word.toSet()) ||
+            word.toUpperCase().toSet() == chars.map { it.toUpperCase() }.toSet().intersect(word.toUpperCase().toSet())
+
 
 
 
@@ -279,9 +280,14 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    for (i in 0 until words.size)
-        for (j in i + 1 until words.size)
-            if (words[i].toSet() == words[j].toSet()) return true
+    for (i in 0 until words.toSet().size)
+        for (j in i + 1 until words.toSet().size) {
+            val a = words[i].toList()
+            val b = words[j].toList()
+            if (a.size > b.size) {
+                if (a.intersect(b).size == a.size) return true
+            } else if (a.intersect(b).size == b.size) return true
+        }
     return false
 }
 
@@ -330,11 +336,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var pair = Pair(-1, -1)
-    for (i in 0..list.size - 2)
-        for (j in i + 1 until list.size)
-            if (list[i] + list[j] == number)
-                pair = Pair(i, j)
-    return pair
+    for (i in 0 until list.size)
+        if (list.contains(number - list[i]) && number - list[i] != list[i])
+            pair = Pair(i, list.indexOf(number - list[i]))
+    return pair.sorted()
 }
 
 /**
