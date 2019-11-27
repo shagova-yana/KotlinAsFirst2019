@@ -234,16 +234,15 @@ fun plusMinus(expression: String): Int {
 fun firstDuplicateIndex(str: String): Int {
     val list = str.split(" ").toList()
     var sum = 0
-    var index = -1
     if (list.size == 1)
         return -1
-    var i = 0
-    while (list[i].toLowerCase() != list[i + 1].toLowerCase()) {
-        sum += list[i].length
+    var i = -1
+    do {
         i++
-    }
+        sum += list[i].length
+    } while (list[i].toLowerCase() != list[i + 1].toLowerCase())
     if (sum != 0) {
-        sum += i
+        sum += i - list[i].length
         return sum
     } else return -1
 }
