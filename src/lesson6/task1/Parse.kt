@@ -161,7 +161,7 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    if (jumps.matches(Regex("""\d+[\s-%]*"""))) {
+    if (jumps.matches(Regex("""(\d+[\s-%]*)*.з"""))) {
         val list = mutableListOf<Int>()
         val regex = Regex("""\d+""").findAll(jumps)
         for (i in regex)
@@ -182,7 +182,17 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    var max = -1
+    if (jumps.matches(Regex("""\d+([\s-+%]*\d*)*"""))) {
+        val reges = Regex("""\d+\s+\+""").findAll(jumps)
+        for (i in reges) {
+            val number = Regex("""\d+""").find(i.value)
+            if (number!!.value.toInt() > max) max = number.value.toInt()
+        }
+    }
+    return max
+}
 
 /**
  * Сложная
@@ -193,7 +203,24 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    if (expression.matches(Regex("""\d+(\s(\+|\-)\s\d+)*"""))) {
+        val number = Regex("""\d+""").findAll(expression).drop(1)
+        val char = Regex("""\+|\-""").findAll(expression).toList()
+        val first = Regex("""\d+""").find(expression)
+        var sum = first!!.value.toInt()
+        var i = 0
+        for (dig in number) {
+            when (char[i].value) {
+                "+" -> sum += dig.value.toInt()
+                "-" -> sum -= dig.value.toInt()
+            }
+            i++
+        }
+        return sum
+    } else
+        throw IllegalArgumentException(expression)
+}
 
 /**
  * Сложная
@@ -204,7 +231,22 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    val list = str.split(" ").toList()
+    var sum = 0
+    var index = -1
+    if (list.size == 1)
+        return -1
+    var i = 0
+    while (list[i].toLowerCase() != list[i + 1].toLowerCase()) {
+        sum += list[i].length
+        i++
+    }
+    if (sum != 0) {
+        sum += i
+        return sum
+    } else return -1
+}
 
 /**
  * Сложная
