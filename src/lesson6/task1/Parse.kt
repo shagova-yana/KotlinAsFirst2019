@@ -263,7 +263,21 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    if (description.matches(Regex("""[А-Я]+[а-я]+\s\d+(\.\d+)*\;*\s*(\s*[А-Я]+[а-я]+\s\d+(\.\d+)*\;?)*"""))){
+        val list = description.split(" ").toList()
+        var index = 0
+        var max = 0.0
+        for (i in 1 until list.size step 2) {
+            val value = Regex("""\d+(\.\d+)*""").find(list[i])!!.value.toDouble()
+            if (value >= 0 && value > max) {
+                max = value
+                index = i
+            }
+        }
+        return list[index - 1]
+    } else return ""
+}
 
 /**
  * Сложная
