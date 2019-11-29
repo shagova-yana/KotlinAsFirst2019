@@ -264,10 +264,10 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    if (description.matches(Regex("""[А-Я]+[а-я]+\s\d+(\.\d+)*\;*\s*(\s*[А-Я]+[а-я]+\s\d+(\.\d+)*\;?)*"""))){
+    var max = 0.0
+    if (description.matches(Regex("""[А-Я]*[а-я]*[a-z]*[A-Z]*\s\d+(\.\d+)*\;*\s*(\s*[А-Я]*[а-я]*[a-z]*[A-Z]*\s\d+(\.\d+)*\;*)*"""))){
         val list = description.split(" ").toList()
         var index = 0
-        var max = 0.0
         for (i in 1 until list.size step 2) {
             val value = Regex("""\d+(\.\d+)*""").find(list[i])!!.value.toDouble()
             if (value >= 0 && value > max) {
@@ -275,7 +275,8 @@ fun mostExpensive(description: String): String {
                 index = i
             }
         }
-        return list[index - 1]
+        return if (max != 0.0) list[index - 1]
+        else "Any good with price 0.0"
     } else return ""
 }
 
@@ -290,8 +291,18 @@ fun mostExpensive(description: String): String {
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
-
+fun fromRoman(roman: String): Int = TODO() /**{
+    if (roman.matches(Regex("""[IVXLCDM]*""")))  {
+        val map = mutableMapOf<Int, String>(1 to "I", 2 to "II", 3 to "III", 4 to "IV", 5 to "V", 6 to "VI", 7 to "VII",
+            8 to "VIII", 9 to "IX", 10 to "X", 11 to "XI", 12 to "XII", 13 to "XIII", 14 to "XIV", 15 to "XV", 16 to "XVI",
+            17 to "XVII", 18 to "XVIII", 19 to "XIX", 20 to "XX", 30 to "XXX", 40 to "XL", 50 to "L", 60 to "LX",
+            70 to "LXX", 80 to "LXXX", 90 to "XC", 100 to "C", 200 to "CC", 300 to "CCC", 400 to "CD", 500 to "D",
+            600 to "DC", 700 to "DCC", 800 to "DCCC", 900 to "CM", 1000 to "M", 2000 to "MM", 3000 to "MMM")
+        val thouse = Regex("""^\M*""").findAll(roman).toList()
+        val hundred = Regex("""\C*|\CD?|\CM?|\D\C*""").findAll(roman).toList()
+    }
+}
+     */
 /**
  * Очень сложная
  *
