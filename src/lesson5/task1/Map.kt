@@ -283,7 +283,7 @@ fun hasAnagrams(words: List<String>): Boolean {
         for (j in i + 1 until words.size) {
             val a = words[i].toList()
             val b = words[j].toList()
-            if (a == b) return true
+            if (a.size == b.size && a.toSet() == b.toSet()) return true
         }
     return false
 }
