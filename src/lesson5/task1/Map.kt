@@ -242,8 +242,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    word.toSet() == chars.toSet().intersect(word.toSet()) ||
-            word.toUpperCase().toSet() == chars.map { it.toUpperCase() }.toSet().intersect(word.toUpperCase().toSet())
+    word.toUpperCase().toSet() == chars.map { it.toUpperCase() }.toSet().intersect(word.toUpperCase().toSet())
 
 
 
@@ -284,9 +283,7 @@ fun hasAnagrams(words: List<String>): Boolean {
         for (j in i + 1 until words.size) {
             val a = words[i].toList()
             val b = words[j].toList()
-            if (a.size > b.size) {
-                if (a.intersect(b).size == a.size) return true
-            } else if (a.intersect(b).size == b.size) return true
+            if (a == b) return true
         }
     return false
 }
@@ -337,7 +334,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var pair = Pair(-1, -1)
     for (i in 0 until list.size)
-        if (list.contains(number - list[i]) && number - list[i] != list[i])
+        if (list.contains(number - list[i]) && list.indexOf(number - list[i]) != i)
             pair = Pair(i, list.indexOf(number - list[i]))
     return pair.sorted()
 }
