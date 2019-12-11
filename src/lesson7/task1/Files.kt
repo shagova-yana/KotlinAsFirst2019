@@ -304,14 +304,15 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 }
             } else {
                 for (i in 0 until char.size) {
+                    if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]) || dictionary.isEmpty())
+                        newWord.append(char[i])
                     if (dictionary.contains(char[i].toUpperCase())) {
                         newWord.append((dictionary[char[i].toUpperCase()] ?: error("")).toLowerCase())
                         continue
                     }
                     if (dictionary.contains(char[i]))
                         newWord.append((dictionary[char[i]] ?: error("")).toLowerCase())
-                    if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]) && dictionary.isEmpty())
-                        newWord.append(char[i])
+
                 }
             }
             shiftUnderCont -= 1
