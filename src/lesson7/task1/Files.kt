@@ -282,14 +282,14 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             val char = word.toList()
             val newWord = StringBuilder()
             if (char[0] == char[0].toUpperCase()) {
-                if (dictionary[char[0].toLowerCase()]!!.length > 1) {
+                if ((dictionary[char[0].toLowerCase()] ?: error("")).length > 1) {
                     val newDic = StringBuilder()
                     val a = dictionary[char[0].toLowerCase()]
                     newDic.append(a!![0].toUpperCase())
                     for (i in 1 until a.length)
                         newDic.append(a[i].toLowerCase())
                     newWord.append(newDic.toString())
-                } else newWord.append(dictionary[char[0].toLowerCase()]!!.toUpperCase())
+                } else newWord.append((dictionary[char[0].toLowerCase()] ?: error("")).toUpperCase())
             }
             if (newWord.isNotEmpty()) {
                 for (i in 1 until char.size) {
@@ -305,12 +305,12 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             } else {
                 for (i in 0 until char.size) {
                     if (dictionary.contains(char[i].toUpperCase())) {
-                        newWord.append(dictionary[char[i].toUpperCase()]!!.toLowerCase())
+                        newWord.append((dictionary[char[i].toUpperCase()] ?: error("")).toLowerCase())
                         continue
                     }
                     if (dictionary.contains(char[i]))
-                        newWord.append(dictionary[char[i]]!!.toLowerCase())
-                    if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]))
+                        newWord.append((dictionary[char[i]] ?: error("")).toLowerCase())
+                    if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]) && dictionary.isEmpty())
                         newWord.append(char[i])
                 }
             }
@@ -413,7 +413,7 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-   TODO()
+    TODO()
 }
 
 /**
@@ -559,7 +559,10 @@ fun markdownToHtml(inputName: String, outputName: String) {
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val output = File(outputName).bufferedWriter()
     var a = rhv
-    val max = lhv.toString().length + rhv.toString().length
+    var max = 0
+    max = if (lhv.toString().length + rhv.toString().length == (lhv * rhv).toString().length)
+        lhv.toString().length + rhv.toString().length + 1
+    else lhv.toString().length + rhv.toString().length
     for (i in 1..max - lhv.toString().length)
         output.write(" ")
     output.write(lhv.toString())
@@ -621,6 +624,6 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    println(19935 % 22)
+    TODO()
 }
 
