@@ -78,10 +78,13 @@ val months = listOf(
     "января", "февраля", "марта", "апреля", "мая", "июня",
     "июля", "августа", "сентября", "октября", "ноября", "декабря"
 )
-val months2 = mapOf(
-    "января" to 1, "февраля" to 2, "марта" to 3 ,
-    "апреля" to 4, "мая" to 5, "июня" to 6, "июля" to 7, "августа" to 8,
-    "сентября" to 9, "октября" to 10, "ноября" to 11, "декабря" to 12
+val nameNumber = mapOf(
+    "января" to months.indexOf("января") + 1, "февраля" to months.indexOf("февраля") + 1,
+    "марта" to months.indexOf("марта") + 1, "апреля" to months.indexOf("апреля") + 1,
+    "мая" to months.indexOf("мая") + 1, "июня" to months.indexOf("июня") + 1,
+    "июля" to months.indexOf("июля") + 1, "августа" to months.indexOf("августа") + 1,
+    "сентября" to months.indexOf("сентября") + 1, "октября" to months.indexOf("октября") + 1,
+    "ноября" to months.indexOf("ноября") + 1, "декабря" to months.indexOf("декабря") + 1
 )
 
 fun dateStrToDigit(str: String): String {
@@ -91,8 +94,8 @@ fun dateStrToDigit(str: String): String {
     val day = parts[0].toIntOrNull()
     val years = parts[2].toIntOrNull()
     var m = 0
-    if (months2.contains(month))
-        m = months2[month]!!
+    if (nameNumber.contains(month))
+        m = nameNumber[month] ?: error("")
     else return ""
     if (day!! <= daysInMonth(m, years!!))
         return String.format("%02d.%02d.%d", day, m, years)
@@ -118,9 +121,9 @@ fun dateDigitToStr(digital: String): String {
     if (part[1].toInt() !in 1..12) return ""
     val month = months[part[1].toInt() - 1]
     val year = part[2].toInt()
-    if (day <= daysInMonth(part[1].toInt(), year))
-        return String.format("%d %s %d", day, month, year)
-    else return ""
+    return if (day <= daysInMonth(part[1].toInt(), year))
+        String.format("%d %s %d", day, month, year)
+    else ""
 }
 
 /**
@@ -237,9 +240,9 @@ fun firstDuplicateIndex(str: String): Int {
             break
         }
     }
-    if (index != -1)
-        return sum + index - list[index].length
-    else return index
+    return if (index != -1)
+        sum + index - list[index].length
+    else index
 }
 
 /**

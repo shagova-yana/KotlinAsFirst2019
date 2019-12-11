@@ -265,10 +265,9 @@ fun convertToString(n: Int, base: Int): String {
     val res = StringBuilder()
     for (i in 0 until list.size)
         if (list[i] > 9)
-            res.append('W' + list[i])
+            res.append(87.toChar() + list[i])
         else res.append(list[i].toString())
     return res.toString()
-
 }
 
 /**
@@ -298,7 +297,7 @@ fun decimalFromString(str: String, base: Int): Int {
     var dig = 0
     for (i in 0 until str.length) {
         if (str[i] <= '9') dig += (str[i] - '0') * base.toDouble().pow(str.length - 1 - i).toInt()
-        if (str[i] >= 'a') dig += (str[i] - 'W') * base.toDouble().pow(str.length - 1 - i).toInt()
+        if (str[i] >= 'a') dig += (str[i] - 87.toChar()) * base.toDouble().pow(str.length - 1 - i).toInt()
     }
     return dig
 }
