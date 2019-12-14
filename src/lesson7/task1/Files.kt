@@ -300,30 +300,36 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 val char = word.toList()
                 val newWord = StringBuilder()
                 if (char[0] == char[0].toUpperCase()) {
-                    if ((dictionary[char[0].toLowerCase()] ?: error("")).length > 1) {
-                        val newDic = StringBuilder()
-                        val a = dictionary[char[0].toLowerCase()]
-                        newDic.append(a!![0].toUpperCase())
-                        for (i in 1 until a.length)
-                            newDic.append(a[i].toLowerCase())
-                        newWord.append(newDic.toString())
-                    } else newWord.append((dictionary[char[0].toLowerCase()] ?: error("")).toUpperCase())
+                    if (dictionary.containsKey(char[0].toLowerCase())) {
+                        if ((dictionary[char[0].toLowerCase()] ?: error("")).length > 1) {
+                            val newDic = StringBuilder()
+                            val a = dictionary[char[0].toLowerCase()]
+                            newDic.append(a!![0].toUpperCase())
+                            for (i in 1 until a.length)
+                                newDic.append(a[i].toLowerCase())
+                            newWord.append(newDic.toString())
+                        } else newWord.append((dictionary[char[0].toLowerCase()] ?: error("")).toUpperCase())
+                    } else newWord.append(char[0])
                 }
                 if (newWord.isNotEmpty()) {
                     for (i in 1 until char.size) {
+                        if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i])) {
+                            newWord.append(char[i])
+                            continue
+                        }
                         if (dictionary.contains(char[i].toUpperCase())) {
                             newWord.append(dictionary[char[i].toUpperCase()])
                             continue
                         }
                         if (dictionary.contains(char[i]))
                             newWord.append(dictionary[char[i]])
-                        if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]))
-                            newWord.append(char[i])
                     }
                 } else {
                     for (i in 0 until char.size) {
-                        if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]) || dictionary.isEmpty())
+                        if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]) || dictionary.isEmpty()) {
                             newWord.append(char[i])
+                            continue
+                        }
                         if (dictionary.contains(char[i].toUpperCase())) {
                             newWord.append((dictionary[char[i].toUpperCase()] ?: error("")).toLowerCase())
                             continue
