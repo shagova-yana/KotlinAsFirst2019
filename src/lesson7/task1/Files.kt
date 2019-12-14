@@ -247,9 +247,10 @@ fun top20Words(inputName: String): Map<String, Int> {
             else map[key] = 1
         }
     }
-    val newMap = map.filter { it.value > 1 }
-    return if (newMap.size <= 20) newMap
+
+    return if (map.size <= 20) map
     else {
+        val newMap = map.filter { it.value > 1 }
         newMap.toList().sortedByDescending { it.second }.toMap().toList().take(20).toMap()
     }
 }
