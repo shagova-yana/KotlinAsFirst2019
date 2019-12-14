@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+
 import java.io.File
 import java.lang.StringBuilder
 
@@ -235,7 +236,22 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  *
  */
 fun top20Words(inputName: String): Map<String, Int> {
-    TODO()
+    val map = mutableMapOf<String, Int>()
+    for (line in File(inputName).readLines()) {
+        if (!line.contains(Regex("""([A-Z]|[a-z]|[А-Я]|[а-я]|[Ёё])+"""))) continue
+        val words = Regex("""([A-Z]|[a-z]|[А-Я]|[а-я]|[Ёё])+""").findAll(line).toList()
+        for (word in words) {
+            val key = word.value.toLowerCase()
+            if (map.containsKey(key))
+                map[key] = map[key]!! + 1
+            else map[key] = 1
+        }
+    }
+    val newMap = map.filter { it.value > 1 }
+    return if (newMap.size <= 20) newMap
+    else {
+        newMap.toList().sortedByDescending { it.second }.toMap().toList().take(20).toMap()
+    }
 }
 
 
@@ -276,50 +292,55 @@ fun top20Words(inputName: String): Map<String, Int> {
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
     val output = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
-        var shiftUnderCont = line.split(" ").size
-        for (word in line.split(" ")) {
-            val char = word.toList()
-            val newWord = StringBuilder()
-            if (char[0] == char[0].toUpperCase()) {
-                if ((dictionary[char[0].toLowerCase()] ?: error("")).length > 1) {
-                    val newDic = StringBuilder()
-                    val a = dictionary[char[0].toLowerCase()]
-                    newDic.append(a!![0].toUpperCase())
-                    for (i in 1 until a.length)
-                        newDic.append(a[i].toLowerCase())
-                    newWord.append(newDic.toString())
-                } else newWord.append((dictionary[char[0].toLowerCase()] ?: error("")).toUpperCase())
-            }
-            if (newWord.isNotEmpty()) {
-                for (i in 1 until char.size) {
-                    if (dictionary.contains(char[i].toUpperCase())) {
-                        newWord.append(dictionary[char[i].toUpperCase()])
-                        continue
-                    }
-                    if (dictionary.contains(char[i]))
-                        newWord.append(dictionary[char[i]])
-                    if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]))
-                        newWord.append(char[i])
+    if (dictionary.isNotEmpty()) {
+        for (line in File(inputName).readLines()) {
+            var shiftUnderCont = line.split(" ").size
+            for (word in line.split(" ")) {
+                val char = word.toList()
+                val newWord = StringBuilder()
+                if (char[0] == char[0].toUpperCase()) {
+                    if ((dictionary[char[0].toLowerCase()] ?: error("")).length > 1) {
+                        val newDic = StringBuilder()
+                        val a = dictionary[char[0].toLowerCase()]
+                        newDic.append(a!![0].toUpperCase())
+                        for (i in 1 until a.length)
+                            newDic.append(a[i].toLowerCase())
+                        newWord.append(newDic.toString())
+                    } else newWord.append((dictionary[char[0].toLowerCase()] ?: error("")).toUpperCase())
                 }
-            } else {
-                for (i in 0 until char.size) {
-                    if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]) || dictionary.isEmpty())
-                        newWord.append(char[i])
-                    if (dictionary.contains(char[i].toUpperCase())) {
-                        newWord.append((dictionary[char[i].toUpperCase()] ?: error("")).toLowerCase())
-                        continue
+                if (newWord.isNotEmpty()) {
+                    for (i in 1 until char.size) {
+                        if (dictionary.contains(char[i].toUpperCase())) {
+                            newWord.append(dictionary[char[i].toUpperCase()])
+                            continue
+                        }
+                        if (dictionary.contains(char[i]))
+                            newWord.append(dictionary[char[i]])
+                        if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]))
+                            newWord.append(char[i])
                     }
-                    if (dictionary.contains(char[i]))
-                        newWord.append((dictionary[char[i]] ?: error("")).toLowerCase())
+                } else {
+                    for (i in 0 until char.size) {
+                        if (!dictionary.contains(char[i].toUpperCase()) && !dictionary.contains(char[i]) || dictionary.isEmpty())
+                            newWord.append(char[i])
+                        if (dictionary.contains(char[i].toUpperCase())) {
+                            newWord.append((dictionary[char[i].toUpperCase()] ?: error("")).toLowerCase())
+                            continue
+                        }
+                        if (dictionary.contains(char[i]))
+                            newWord.append((dictionary[char[i]] ?: error("")).toLowerCase())
 
+                    }
                 }
+                shiftUnderCont -= 1
+                output.write(newWord.toString())
+                if (shiftUnderCont != 0) output.write(" ")
             }
-            shiftUnderCont -= 1
-            output.write(newWord.toString())
-            if (shiftUnderCont != 0) output.write(" ")
+            output.newLine()
         }
-        output.newLine()
+    } else {
+        val text = File(inputName).readText()
+        output.write(text)
     }
     output.close()
 }
@@ -414,7 +435,154 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val output = File(outputName).bufferedWriter()
+    output.write("<html>")
+    output.newLine()
+    output.write("<body>")
+    output.newLine()
+    output.write("<p>")
+    output.newLine()
+    var i = 0
+    var b = 0
+    var s = 0
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) {
+            output.write("</p>")
+            output.newLine()
+            output.write("<p>")
+        }
+        var shift = line.split(" ").size
+        for (str in line.split(" ")) {
+            if (!str.contains(Regex("""[*~]"""))) {
+                shift -= 1
+                output.write(str)
+                if (shift != 0) output.write(" ")
+                continue
+            }
+            var newStr = String()
+            if (str.contains(Regex("""[~]"""))) {
+                val d = crossedOut(str, s).first
+                s = crossedOut(str, s).second
+                val word = seconds(d, b).first
+                b = seconds(d, b).second
+                newStr = ones(word, i).first
+                i = ones(word, i).second
+                shift -= 1
+                output.write(newStr)
+                if (shift != 0) output.write(" ")
+                continue
+            }
+            if (str.contains(Regex("""[~][^*]"""))) {
+                newStr = crossedOut(str, s).first
+                s = crossedOut(str, s).second
+            }
+            if (str.matches(Regex("""\*[^*]+"""))) {
+                newStr = ones(str, i).first
+                i = ones(str, i).second
+                shift -= 1
+                output.write(newStr)
+                if (shift != 0) output.write(" ")
+                continue
+            }
+            if (str.contains(Regex("""[*]+"""))) {
+                val a = seconds(str, b).first
+                b = seconds(str, b).second
+                newStr = ones(a, i).first
+                i = ones(a, i).second
+                shift -= 1
+                output.write(newStr)
+                if (shift != 0) output.write(" ")
+                continue
+            }
+            shift -= 1
+            output.write(newStr)
+            if (shift != 0) output.write(" ")
+        }
+        output.newLine()
+    }
+    output.write("</p>")
+    output.newLine()
+    output.write("</body>")
+    output.newLine()
+    output.write("</html>")
+    output.close()
+}
+
+
+fun ones(str: String, i: Int): Pair<String, Int> {
+    val newStr = StringBuilder()
+    var n = i
+    loop@ for (char in str) {
+        if (char == '*')
+            when (n) {
+                0 -> {
+                    newStr.append("<i>")
+                    n++
+                    continue@loop
+                }
+                1 -> {
+                    newStr.append("</i>")
+                    n--
+                    continue@loop
+                }
+            }
+        newStr.append(char)
+    }
+    return Pair(newStr.toString(), n)
+}
+
+fun seconds(str: String, b: Int): Pair<String, Int> {
+    val newStr = StringBuilder()
+    var n = b
+    var c = 0
+    while (c < str.length - 1) {
+        if (str[c] == '*' && str[c + 1] == '*')
+            when (n) {
+                0 -> {
+                    newStr.append("<b>")
+                    n++
+                    c += 2
+                }
+                1 -> {
+                    newStr.append("</b>")
+                    n--
+                    c += 2
+                }
+            }
+        if (c < str.length) newStr.append(str[c])
+        else break
+        c++
+    }
+    if (c < str.length) {
+        newStr.append(str.last())
+    }
+    return Pair(newStr.toString(), n)
+}
+
+fun crossedOut(str: String, s: Int): Pair<String, Int> {
+    val newStr = StringBuilder()
+    var n = s
+    var c = 0
+    while (c < str.length - 1) {
+        if (str[c] == '~' && str[c + 1] == '~')
+            when (n) {
+                0 -> {
+                    newStr.append("<s>")
+                    n++
+                    c += 2
+                }
+                1 -> {
+                    newStr.append("</s>")
+                    n--
+                    c += 2
+                }
+            }
+        if (c < str.length) newStr.append(str[c])
+        else break
+        c++
+    }
+    if (c < str.length) newStr.append(str.last())
+    return Pair(newStr.toString(), n)
 }
 
 /**
